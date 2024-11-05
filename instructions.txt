@@ -1,0 +1,37 @@
+# important
+-	submit code to your github
+-	write a readme file with proper documentation, step by step guide on how did u do it
+-	with images and diagrams
+-	submit the code before 6 november 11PM
+-	p.s. documentation also carries marks
+-	submission link:
+https://docs.google.com/spreadsheets/d/1giAvlesBb986VvBph7OYyuBZCCsQSfBYQCSBMb_5v3g/edit?usp=sharing
+
+## Jenkins project 
+- generate a sample react application
+- write a multistage build dockerfile
+- find a optimum image to reduce size of the dockerfile
+- write down the size you reduced of the dockerfile (single stage vs multistage(slim image))
+- write a jenkins pipeline, 
+	- should be triggered on git push 
+	- it fetches source code of react from github (public repo)
+	- build docker file without using any cache
+	- tag with current date-time
+	- push to dockerhub (private repo)
+	- no credential should be hardcoded
+	- use env variable as much as possible
+	- then trigger the pipeline 2 and passes the image tag as parameter
+	- deletes all the caches and images of the machine (clean machine)
+- pipeline 2 
+	- gets the image tag form the pipeline 1
+	- notifies us on google chat that image:tag has been pushed 
+
+- docker server
+	- create a ec2 with docker installed
+	- write a compose file
+
+- pipeline 2
+	- ssh into the docker server
+	- changes the image tag from the compose file
+	- starts the compose environment with no cache and in background
+	- verify that image has been changed
