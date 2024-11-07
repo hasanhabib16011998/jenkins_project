@@ -37,9 +37,6 @@ https://docs.google.com/spreadsheets/d/1giAvlesBb986VvBph7OYyuBZCCsQSfBYQCSBMb_5
 	- verify that image has been changed
 
 
-dockerhub password: HasanHabib16
 
-docker login -u hasanhabib16011998
-dckr_pat_nwGp0E5kwSyisJHOghgzfIaZqGw
 
 Hey!!
