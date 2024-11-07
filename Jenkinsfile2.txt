@@ -3,7 +3,10 @@ pipeline {
 
     environment {
         REPO_URL = 'https://github.com/hasanhabib16011998/jenkins_project' // Replace with your Git repository URL
-        IMAGE_NAME = 'hasanhabib16011998/jenkins-frontend'      // Replace with your Docker image name
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKERHUB_USER = 'hasanhabib16011998'
+        FRONTEND_APP = "jenkins-project"
+        FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
     }
 
     stages {
@@ -18,7 +21,23 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 // Build the Docker image
-                sh 'docker build -t ${IMAGE_NAME}:latest .'
+                sh 'docker build -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} -t ${FRONTEND_IMAGE}:latest -f ./Dockerfile .'
+            }
+        }
+
+        stage('Docker login+push') {
+            steps {
+                // docker login
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
+
+                sh "echo ${password} | docker login -u ${username} --password-stdin"
+                //docker push
+
+                }
+
+                sh 'docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}'
+                sh 'docker push ${FRONTEND_IMAGE}:latest'
+                sh 'docker logout'
             }
         }
     }
