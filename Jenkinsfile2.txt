@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    environment {
+        REPO_URL = 'https://github.com/hasanhabib16011998/jenkins_project' // Replace with your Git repository URL
+        IMAGE_NAME = 'hasanhabib16011998/jenkins-frontend'      // Replace with your Docker image name
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Hello world'
+                // Clone the repository
+                git branch: 'dev', url: "${REPO_URL}"   // Replace 'main' with your branch name if needed
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                // Build the Docker image
+                sh 'docker build -t ${IMAGE_NAME}:latest .'
+            }
+        }
+    }
+}
