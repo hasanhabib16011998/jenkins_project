@@ -17,7 +17,5 @@ pipeline {
                 echo "Using Docker image: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
             }
         }
-
-        // Add other stages as needed
     }
 }
