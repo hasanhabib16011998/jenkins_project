@@ -23,12 +23,12 @@ pipeline {
         success {
             emailext body: "Hi, the pipeline 2 has been built successfully. ${FRONTEND_IMAGE}:${IMAGE_TAG} has been pushed to DockerHub.",
                      subject: 'Pipeline_2 Build Success',
-                     to: 'hasan-02devops@dipti.com.bd'
+                     to: 'jinaj50765@opposir.com'
         }
         failure {
             emailext body: "Hi, the pipeline 2 build has failed. Please check the Jenkins logs for more details.",
                      subject: 'Pipeline_2 Build Failure',
-                     to: 'hasan-02devops@dipti.com.bd'
+                     to: 'jinaj50765@opposir.com'
         }
     }
 }
