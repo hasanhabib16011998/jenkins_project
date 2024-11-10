@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: '', description: 'Docker image tag passed from the triggering pipeline')
+    }
+
+    environment {
+        DOCKERHUB_USER = 'hasanhabib16011998'
+        FRONTEND_APP = "jenkins-project"
+        FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
+    }
+
+    stages {
+        stage('Use Docker Image') {
+            steps {
+                echo "Using Docker image: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+                // Here, you can perform operations using the passed IMAGE_TAG
+                // For example, pulling the Docker image, deploying it, etc.
+                sh "docker pull ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+            }
+        }
+
+        // Add other stages as needed
+    }
+}

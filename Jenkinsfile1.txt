@@ -36,5 +36,11 @@ pipeline {
                 echo "Docker images pushed with tags BUILD_NUMBER, latest, and TIMESTAMP: ${TIMESTAMP}"
             }
         }
+
+        stage('Trigger pipeline_2') {
+            steps {
+                build job: 'pipeline_2', parameters: [string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")]
+            }
+        }
     }
 }
