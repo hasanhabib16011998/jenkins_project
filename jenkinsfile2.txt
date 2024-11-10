@@ -15,9 +15,6 @@ pipeline {
         stage('Use Docker Image') {
             steps {
                 echo "Using Docker image: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
-                // Here, you can perform operations using the passed IMAGE_TAG
-                // For example, pulling the Docker image, deploying it, etc.
-                sh "docker pull ${FRONTEND_IMAGE}:${IMAGE_TAG}"
             }
         }
 
