@@ -4,7 +4,7 @@ pipeline {
     environment {
         REPO_URL = 'https://github.com/hasanhabib16011998/jenkins_project' // Git repository URL
         TIMESTAMP = sh(script: 'date +%Y%m%d%H%M%S', returnStdout: true).trim() // Get current date and time
-        IMAGE_TAG = TIMESTAMP
+        IMAGE_TAG = "${TIMESTAMP}"
         DOCKERHUB_USER = 'hasanhabib16011998'
         FRONTEND_APP = "jenkins-project"
         FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
