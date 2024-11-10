@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         REPO_URL = 'https://github.com/hasanhabib16011998/jenkins_project' // Git repository URL
-        IMAGE_TAG = "${BUILD_NUMBER}"
         TIMESTAMP = sh(script: 'date +%Y%m%d%H%M%S', returnStdout: true).trim() // Get current date and time
+        IMAGE_TAG = TIMESTAMP
         DOCKERHUB_USER = 'hasanhabib16011998'
         FRONTEND_APP = "jenkins-project"
         FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
@@ -20,7 +20,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} -t ${FRONTEND_IMAGE}:latest -t ${FRONTEND_IMAGE}:${TIMESTAMP} -f ./Dockerfile .'
+                sh 'docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} -f ./Dockerfile .'
                 echo "Docker images tagged with BUILD_NUMBER, latest, and TIMESTAMP: ${TIMESTAMP}"
             }
         }
@@ -31,9 +31,7 @@ pipeline {
                     sh "echo ${password} | docker login -u ${username} --password-stdin"
                 }
 
-                sh 'docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}'
-                sh 'docker push ${FRONTEND_IMAGE}:latest'
-                sh 'docker push ${FRONTEND_IMAGE}:${TIMESTAMP}'
+                sh 'docker push ${FRONTEND_IMAGE}:${IMAGE_TAG}'
                 sh 'docker logout'
                 echo "Docker images pushed with tags BUILD_NUMBER, latest, and TIMESTAMP: ${TIMESTAMP}"
             }
