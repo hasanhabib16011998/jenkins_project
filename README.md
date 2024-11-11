@@ -141,7 +141,7 @@ Then go to pipeline's configuration. We need to create the pipeline syntax for l
 
 Paste this code to pipeline script:
 
-'''
+```
 pipeline {
     agent any
 
