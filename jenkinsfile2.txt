@@ -21,14 +21,17 @@ pipeline {
 
     post {
         success {
-            emailext body: "Hi, the pipeline 2 has been built successfully. ${FRONTEND_IMAGE}:${IMAGE_TAG} has been pushed to DockerHub.",
-                     subject: 'Pipeline_2 Build Success',
-                     to: 'jinaj50765@opposir.com'
+            emailext body: "Hi, the pipeline 2 has been built successfully. ${FRONTEND_IMAGE}:${IMAGE_TAG} has been pushed to DockerHub.", subject: 'Pipeline_2 Build Success', to: 'jinaj50765@opposir.com'
+            withCredentials([string(credentialsId: 'GChat', variable: 'token')]) {
+            hangoutsNotify(
+            message: "PIPELINE: $env.JOB_NAME has completed SUCCESSFULLY.<br>BUILD NUMBER: $env.BUILD_NUMBER",
+            token: env.token
+            )
+            }
+
         }
         failure {
-            emailext body: "Hi, the pipeline 2 build has failed. Please check the Jenkins logs for more details.",
-                     subject: 'Pipeline_2 Build Failure',
-                     to: 'jinaj50765@opposir.com'
+            emailext body: "Hi, the pipeline 2 build has failed. Please check the Jenkins logs for more details.", subject: 'Pipeline_2 Build Failure', to: 'jinaj50765@opposir.com'
         }
     }
 }
