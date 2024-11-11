@@ -111,3 +111,29 @@ Then add jenkins to docker group and restart the jenkins server.
 ```
 sudo systemctl restart jenkins
 ```
+
+# Setup DockerHub
+
+Now, go to dockerhub and generate an access token. Access permission should be 'read and write'.
+After generating token, store it securely somewhere. Now, we need to create a credential in your Jenkins server so that we dont have to use this token directly in your codes. Its a bad practice to hard-code credentials into pipeline configuration. Instead, we can use jenkins credentials to manage login information safely into jenkins server. To do that, go to Dashboard>Manage Jenkins>Credentials>System>Global credentials (unrestricted)
+
+Then add the credentials using the username as your dockerhub username and the password as the token provided by DockerHub. Then click 'create'.
+
+# Setup Github webhook
+
+Now, lets configure the pipeline so that when a new commit is pushed to repository, it will automatically build the pipeline.Go to this link for better understanding: https://plugins.jenkins.io/github/
+
+Go to this link for better understanding: https://plugins.jenkins.io/github/
+In the payload URL, add the url in this format: $JENKINS_BASE_URL/github-webhook/
+example: http://65.2.189.39:8080/github-webhook/
+
+content-type: application/x-www-form-encoded
+in 'which events would you like to trigger this webhook' field, click 'send me everything'. Now create the webhook.
+
+Now, when a new code is pushed to git repository, it triggers the webhook and sends the information in $JENKINS_BASE_URL/github-webhook/ this url.
+
+
+
+
+
+
