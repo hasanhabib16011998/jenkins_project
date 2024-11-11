@@ -1,4 +1,4 @@
-Single Stage Vs Multi Stage Build docker:
+#Single Stage Vs Multi Stage Build docker:
 
 This is my single stage build Dockerfie:
 
@@ -55,6 +55,9 @@ docker run -p 80:80 -d frontend_multi_stage
 
 Now lets compare the image sizes of both milti-stage and single stage builds:
 
+```
+docker images
 
-As we can see, the multi stage build is significantly less than the single stage build.
-hey!
+```
+We can see a significant reduction in size of the single stage build an multi stage build containers.
+
