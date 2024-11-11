@@ -123,8 +123,8 @@ Then add the credentials using the username as your dockerhub username and the p
 
 Now, lets configure the pipeline so that when a new commit is pushed to repository, it will automatically build the pipeline.Go to this link for better understanding: https://plugins.jenkins.io/github/
 
-Go to this link for better understanding: https://plugins.jenkins.io/github/
-In the payload URL, add the url in this format: $JENKINS_BASE_URL/github-webhook/
+
+Go to your github repo, go to settings and then select 'add webhook'.In the payload URL, add the url in this format: $JENKINS_BASE_URL/github-webhook/
 example: http://65.2.189.39:8080/github-webhook/
 
 content-type: application/x-www-form-encoded
@@ -133,7 +133,80 @@ in 'which events would you like to trigger this webhook' field, click 'send me e
 Now, when a new code is pushed to git repository, it triggers the webhook and sends the information in $JENKINS_BASE_URL/github-webhook/ this url.
 
 
+# Create pipeline_1
+
+In dashboard, click on 'new item' and then name it 'pipeline_1' and select type as 'pipeline'
+
+Then go to pipeline's configuration. We need to create the pipeline syntax for logging in the dockerhub using the credentials we set earlier. Go to pipeline syntax and select sample step as 'withCredentials:Bind Credentials to variables'. Then set username variable as username and password variable as password. In credentials field, select the credentials we created earlier. Now if we click 'Generate pipeline script' we 
+
+Paste this code to pipeline script:
+
+'''
+pipeline {
+    agent any
+
+    environment {
+        REPO_URL = 'https://github.com/hasanhabib16011998/jenkins_project' // Git repository URL
+        TIMESTAMP = sh(script: 'date +%Y%m%d%H%M%S', returnStdout: true).trim() // Get current date and time
+        IMAGE_TAG = "${TIMESTAMP}"
+        DOCKERHUB_USER = 'hasanhabib16011998'
+        FRONTEND_APP = "jenkins-project"
+        FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Hello'
+                git branch: 'dev', url: "${REPO_URL}"
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} -f ./Dockerfile .'
+                echo "Docker images tagged with BUILD_NUMBER, latest, and TIMESTAMP: ${TIMESTAMP}"
+            }
+        }
+
+        stage('Docker login+push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'password', usernameVariable: 'username')]) {
+                    sh "echo ${password} | docker login -u ${username} --password-stdin"
+                }
+
+                sh 'docker push ${FRONTEND_IMAGE}:${IMAGE_TAG}'
+                sh 'docker logout'
+                echo "Docker images pushed with tags BUILD_NUMBER, latest, and TIMESTAMP: ${TIMESTAMP}"
+            }
+        }
+
+        stage('Trigger pipeline_2') {
+            steps {
+                build job: 'pipeline_2', parameters: [string(name: 'IMAGE_TAG', value: "${IMAGE_TAG}")]
+            }
+        }
+
+        stage('Cleanup Workspace') {
+            steps {
+                script{
+                    cleanWs()
+                }   
+            }
+        }
+
+        stage("DELETE OLD IMAGES"){
+            steps{
+                    sh 'docker rmi ${FRONTEND_IMAGE}:${IMAGE_TAG}'
+            }
+        }
 
 
+    }
+}
+
+```
+
+In addition, we need to setup our pipeline so that when github triggers the webhook on 'git push' event, our pipeline triggers automatically. To do that, in pipeline's configuration, go to 'Build triggers' and enable 'GitHub hook trigger for GitScm polling'.
 
 
