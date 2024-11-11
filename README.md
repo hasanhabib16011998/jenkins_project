@@ -102,5 +102,12 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 We copy the password from here to jenkins initial page and paste it. Then we are successfully logged in . After that, we install the suggested plugins for jenkins. After completion, we create a admin user for our jenkins server.
 
+We also need to add the user 'jenkins' to docker group. To do that:
+```
+sudo vi /etc/group
+```
+Then add jenkins to docker group and restart the jenkins server.
 
-
+```
+sudo systemctl restart jenkins
+```
