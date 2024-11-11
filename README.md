@@ -92,3 +92,15 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 ```
 
+This will install docker and jenkins while creating the instance. Now, we wait for a few while and after the instance is created, we can browse the jenkins server in this URL: http://[your instance's public IP]:8080
+
+We will see the initial page of Jenkins server. Now, we need the administrative password of Jenkins. To do that, we connect to the instance through SSH and copy the password in this directory:
+
+```
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+We copy the password from here to jenkins initial page and paste it. Then we are successfully logged in . After that, we install the suggested plugins for jenkins. After completion, we create a admin user for our jenkins server.
+
+
+
