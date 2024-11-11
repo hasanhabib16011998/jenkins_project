@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: hasanhabib16011998/jenkins-project:20241111001234
+    container_name: frontend
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
