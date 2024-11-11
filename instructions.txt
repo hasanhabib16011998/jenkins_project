@@ -36,7 +36,3 @@ https://docs.google.com/spreadsheets/d/1giAvlesBb986VvBph7OYyuBZCCsQSfBYQCSBMb_5
 	- starts the compose environment with no cache and in background
 	- verify that image has been changed
 
-
-
-
-Hey!!

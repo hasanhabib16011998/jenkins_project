@@ -278,3 +278,21 @@ pipeline {
 }
 
 ```
+
+# Testing
+
+Now, our setup is complete. This is what the 2 pipeline will do:
+
+* pipeline_1
+	* triggered on git push 
+	* it fetches source code from github (public repo)
+	* build docker file without using any cache
+	* tag with current date-time
+	* push to dockerhub
+	* credentials are passed as secret variables
+	* uses env variable as much as possible
+	* then trigger the pipeline 2 and passes the image tag as parameter
+	* deletes all the caches and images of the machine (clean machine)
+* pipeline 2 
+	* gets the image tag form the pipeline 1
+	* notifies us on google chat that image:tag has been pushed 
