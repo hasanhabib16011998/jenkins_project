@@ -137,7 +137,13 @@ Now, when a new code is pushed to git repository, it triggers the webhook and se
 
 In dashboard, click on 'new item' and then name it 'pipeline_1' and select type as 'pipeline'
 
+
+### Set up credentials for dockerhub
 Then go to pipeline's configuration. We need to create the pipeline syntax for logging in the dockerhub using the credentials we set earlier. Go to pipeline syntax and select sample step as 'withCredentials:Bind Credentials to variables'. Then set username variable as username and password variable as password. In credentials field, select the credentials we created earlier. Now if we click 'Generate pipeline script' we 
+
+
+
+### Pipeline-1 Code
 
 Paste this code to pipeline script:
 
@@ -207,6 +213,68 @@ pipeline {
 
 ```
 
+### Hook trigger
+
 In addition, we need to setup our pipeline so that when github triggers the webhook on 'git push' event, our pipeline triggers automatically. To do that, in pipeline's configuration, go to 'Build triggers' and enable 'GitHub hook trigger for GitScm polling'.
 
 
+# Create pipeline_2
+
+In this pipeline, we will get the image tag from pipeline 1 and notify via Google Chat that our pipeline run was successful or not.
+
+### Google Chat plugin
+
+Go to this URL for better understanding: https://support.google.com/chat/answer/9632691?hl=en&co=GENIE.Platform%3DAndroid
+
+Download the plugin: https://storage.googleapis.com/jenkins-bot-production.appspot.com/plugin/1.0/google-hangouts-chat-notifier.hpi
+
+In your jenkins dashboard, go to Manage jenkins> plugins and go to advanced settings. In the 'Deploy' section, upload the downloaded file.
+
+Now, create a workspace in google chat. Go to the workspace and on the workspaces name, we find a dropdown menu. In this menu, we click apps and integration> add apps.
+
+From the list, we select jenkins app.We will get a token instantly. We take this token and create another credential in jenkins.
+
+### pipeline_2 configuration
+
+Now, we go to dashboard, create another pipeline named 'pipeline_2'. Now we paste this code in the pipeline_2 script:
+
+```
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: '', description: 'Docker image tag passed from the triggering pipeline')
+    }
+
+    environment {
+        DOCKERHUB_USER = 'hasanhabib16011998'
+        FRONTEND_APP = "jenkins-project"
+        FRONTEND_IMAGE = "${DOCKERHUB_USER}/${FRONTEND_APP}"
+    }
+
+    stages {
+        stage('Use Docker Image') {
+            steps {
+                echo "Using Docker image: ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext body: "Hi, the pipeline 2 has been built successfully. ${FRONTEND_IMAGE}:${IMAGE_TAG} has been pushed to DockerHub.", subject: 'Pipeline_2 Build Success', to: 'jinaj50765@opposir.com'
+            withCredentials([string(credentialsId: 'GChat', variable: 'token')]) {
+            hangoutsNotify(
+            message: "PIPELINE: $env.JOB_NAME has completed SUCCESSFULLY.<br>IMAGE TAG: ${FRONTEND_IMAGE}:${IMAGE_TAG}",
+            token: env.token
+            )
+            }
+
+        }
+        failure {
+            emailext body: "Hi, the pipeline 2 build has failed. Please check the Jenkins logs for more details.", subject: 'Pipeline_2 Build Failure', to: 'jinaj50765@opposir.com'
+        }
+    }
+}
+
+```
