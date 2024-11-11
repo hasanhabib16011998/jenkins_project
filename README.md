@@ -262,7 +262,6 @@ pipeline {
 
     post {
         success {
-            emailext body: "Hi, the pipeline 2 has been built successfully. ${FRONTEND_IMAGE}:${IMAGE_TAG} has been pushed to DockerHub.", subject: 'Pipeline_2 Build Success', to: 'jinaj50765@opposir.com'
             withCredentials([string(credentialsId: 'GChat', variable: 'token')]) {
             hangoutsNotify(
             message: "PIPELINE: $env.JOB_NAME has completed SUCCESSFULLY.<br>IMAGE TAG: ${FRONTEND_IMAGE}:${IMAGE_TAG}",
@@ -296,3 +295,10 @@ Now, our setup is complete. This is what the 2 pipeline will do:
 * pipeline 2 
 	* gets the image tag form the pipeline 1
 	* notifies us on google chat that image:tag has been pushed 
+
+
+To test that, we can push a new commit in git.
+
+# Conclusion
+
+In this setup, we implement a CI workflow using Jenkins to automate the building, testing, and deployment of a Dockerized application. The process begins with a **Git push event** that triggers **pipeline_1**, which **pulls the source code from a GitHub repository** and **builds a Docker image** of the application. Using a **multi-stage Docker** build, we create a **lightweight production image** and **tag it with a timestamp** before pushing it to DockerHub. Jenkins handles DockerHub credentials securely through **stored credentials**, and after the **image is pushed**, pipeline_1 **triggers pipeline_2**, **passing along the image tag** as a parameter. pipeline_2 then uses the tag to confirm the deployment success and **sends a notification through Google Chat**. This setup not only automates the build and deployment processes but also ensures secure credential management, efficient resource usage by clearing caches, and streamlined notifications to keep team members informed.
